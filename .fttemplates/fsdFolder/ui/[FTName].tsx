@@ -1,6 +1,5 @@
 import React, { FC, memo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { classNames } from '@/shared/lib/helpers/ClassNames/ClassNames';
+import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
 import cls from './[FTName].module.scss';
 
 interface [FTName]Props {
@@ -9,7 +8,6 @@ className?: string;
 
 export const [FTName]: FC<[FTName]Props> = memo((props) => {
 const { className } = props;
-const { t } = useTranslation()
 
 return (
     <div className={classNames(cls.[FTName | camelcase], {}, [className])}>

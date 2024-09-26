@@ -1,0 +1,26 @@
+import React, { FC, ReactNode } from 'react';
+
+import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
+
+import cls from './RightAndLeftLayout.module.scss';
+
+interface RightAndLeftLayoutProps {
+    className?: string;
+    rightContent: ReactNode;
+    LeftContent: ReactNode;
+}
+
+export const RightAndLeftLayout: FC<RightAndLeftLayoutProps> = (props) => {
+    const { className, LeftContent, rightContent } = props;
+
+    return (
+        <div className={classNames(cls.rightAndLeftLayout, {}, [className])}>
+            <div className={classNames(cls.right, {}, [className])}>
+                {rightContent}{' '}
+            </div>
+            <div className={classNames(cls.left, {}, [className])}>
+                {LeftContent}
+            </div>
+        </div>
+    );
+};
