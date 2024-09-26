@@ -1,0 +1,35 @@
+@import "reset";
+@import "variables/global";
+@import "themes/normal";
+
+body {
+    color: var(--primary-color);
+    font: var(--font-m);
+}
+
+.app {
+    background: var(--bg-color);
+    min-height: 100vh;
+    font: var(--font-m);
+    color: var(--text-color);
+}
+
+.content-page {
+    display: flex;
+}
+
+// скрол
+*::-webkit-scrollbar {
+    width: 12px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--light-bg-color);        /* цвет зоны отслеживания */
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: var(--icon-color);    /* цвет бегунка */
+    border-radius: 20px;       /* округлось бегунка */
+    border: 1px solid var(--accent-color);  /* отступ вокруг бегунка */
+}

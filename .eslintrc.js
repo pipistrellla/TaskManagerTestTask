@@ -1,5 +1,3 @@
-const { wrap } = require('module');
-
 module.exports = {
     root: true,
     env: {
