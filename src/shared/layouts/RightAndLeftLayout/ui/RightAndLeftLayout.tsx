@@ -7,11 +7,11 @@ import cls from './RightAndLeftLayout.module.scss';
 interface RightAndLeftLayoutProps {
     className?: string;
     rightContent: ReactNode;
-    LeftContent: ReactNode;
+    leftContent: ReactNode;
 }
 
 export const RightAndLeftLayout: FC<RightAndLeftLayoutProps> = (props) => {
-    const { className, LeftContent, rightContent } = props;
+    const { className, leftContent, rightContent } = props;
 
     return (
         <div className={classNames(cls.rightAndLeftLayout, {}, [className])}>
@@ -19,7 +19,7 @@ export const RightAndLeftLayout: FC<RightAndLeftLayoutProps> = (props) => {
                 {rightContent}{' '}
             </div>
             <div className={classNames(cls.left, {}, [className])}>
-                {LeftContent}
+                {leftContent}
             </div>
         </div>
     );

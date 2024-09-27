@@ -1,9 +1,8 @@
 .rightAndLeftLayout {
-    min-height: 100%;
     display: grid;
     grid-template-areas: "left right ";
     grid-template-columns: 1fr 1fr;
-    height: 100vh;
+    min-height: 100%;
 }
 
 .left {

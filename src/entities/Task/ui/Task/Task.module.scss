@@ -1,0 +1,19 @@
+.Icon {
+    rotate: -90deg;
+    width: 24px;
+    height: 24px;
+
+    &:hover {
+        scale: 1.4;
+    }
+}
+
+.taskName {
+    display: flex;
+}
+
+.opened {
+    &.Icon {
+        rotate: 0deg;
+    }
+}

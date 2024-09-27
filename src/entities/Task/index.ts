@@ -1,3 +1,4 @@
-import { Task } from './ui/Task';
+import { Task } from './ui/Task/Task';
+import { TaskList } from './ui/TaskList/TaskList';
 
-export { Task };
+export { Task, TaskList };
