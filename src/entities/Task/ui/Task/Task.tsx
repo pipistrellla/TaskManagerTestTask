@@ -36,7 +36,7 @@ export const Task: React.FC<TaskNodeProps> = (props) => {
                     </Button>
                 )}
                 <Button onClick={() => TaskListStore.setActiveTask(task)}>
-                    {task.name}
+                    {task.id} {task.name}
                 </Button>
             </div>
             {isOpen && task.children && (

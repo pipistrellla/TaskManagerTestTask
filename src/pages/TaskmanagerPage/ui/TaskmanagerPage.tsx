@@ -16,7 +16,6 @@ interface TaskmanagerPageProps {
 export const TaskmanagerPage: FC<TaskmanagerPageProps> = memo(
     observer((props) => {
         const { className } = props;
-        console.log(TaskListStore.TaskListData);
 
         return (
             <div className={classNames(cls.taskmanagerPage, {}, [className])}>
