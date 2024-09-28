@@ -16,6 +16,7 @@ export const DeleteTask: FC<DeleteTaskProps> = memo((props) => {
 
     return (
         <div className={classNames(cls.deleteTask, {}, [className])}>
+            <Button onClick={() => console.log(123)}>Добавить подзадачу</Button>
             <Modal>
                 <Text
                     title="Удалить задачу?"

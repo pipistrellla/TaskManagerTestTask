@@ -3,7 +3,7 @@
     align-items: center;
     border-radius: 48px;
     padding: 8px 16px;
-    border: 2px solid var(--icon-redesigned);
+    border: 2px solid var(--icon-color);
     width: 100%;
 }
 
@@ -12,19 +12,19 @@
     outline: none;
     width: 100%;
     background: none;
-    color: var(--text-redesigned);
+    color: var(--text-color);
 
     &::placeholder {
-        color: var(--hint-redesigned);
+        color: var(--hint-color);
     }
 }
 
 .focused {
-    border: 2px solid var(--accent-redesigned);
+    border: 2px solid var(--accent-color);
 
     .addonLeft svg,
     .addonRight svg {
-        color: var(--accent-redesigned);
+        color: var(--accent-color);
     }
 }
 
