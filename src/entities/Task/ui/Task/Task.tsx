@@ -3,16 +3,18 @@ import React, { useState } from 'react';
 import ArrowLogo from 'src/shared/assets/icons/arrow.svg';
 import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
 import { Button } from 'src/shared/ui/Button/Button';
+import { Card } from 'src/shared/ui/Card';
 
 import cls from './Task.module.scss';
 import TaskListStore, { TaskProps } from '../../model/store/TaskListStore';
 
 export type TaskNodeProps = {
     task: TaskProps;
+    className?: string;
 };
 
 export const Task: React.FC<TaskNodeProps> = (props) => {
-    const { task } = props;
+    const { task, className } = props;
     const [isOpen, setIsOpen] = useState(false);
 
     const OnClickToggleOpen = () => {
@@ -20,10 +22,14 @@ export const Task: React.FC<TaskNodeProps> = (props) => {
     };
 
     return (
-        <div className={classNames(cls.Task, {}, [])}>
-            <div className={cls.taskName}>
+        <div className={classNames(cls.Task, {}, [className])}>
+            <Card border="square" variant="light" className={cls.taskName}>
                 {task.children && task.children.length > 0 && (
-                    <Button onClick={OnClickToggleOpen} addonRight>
+                    <Button
+                        onClick={OnClickToggleOpen}
+                        addonRight
+                        variant="clear"
+                    >
                         <img
                             className={classNames(
                                 cls.Icon,
@@ -35,14 +41,21 @@ export const Task: React.FC<TaskNodeProps> = (props) => {
                         />
                     </Button>
                 )}
-                <Button onClick={() => TaskListStore.setActiveTask(task)}>
+                <Button
+                    variant="clear"
+                    onClick={() => TaskListStore.setActiveTask(task)}
+                >
                     {task.id} {task.name}
                 </Button>
-            </div>
+            </Card>
             {isOpen && task.children && (
                 <div>
                     {task.children.map((child) => (
-                        <Task key={child.id} task={child} />
+                        <Task
+                            className={cls.AdditionalTask}
+                            key={child.id}
+                            task={child}
+                        />
                     ))}
                 </div>
             )}

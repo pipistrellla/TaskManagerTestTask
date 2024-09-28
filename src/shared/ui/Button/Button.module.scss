@@ -33,7 +33,6 @@
     background: var(--light-bg-color);
     border: none;
     outline: none;
-    border-radius: 34px;
 
     &.normal {
         background: var(--light-bg-color);
@@ -50,7 +49,6 @@
 
 .outline {
     background: none;
-    border-radius: 34px;
 
     &.normal {
         border: 2px solid var(--icon-color);
@@ -94,4 +92,12 @@
 
 .fullWidth {
     width: 100%;
+}
+
+.rounded {
+    border-radius: 34px;
+}
+
+.square {
+    border-radius: 0;
 }

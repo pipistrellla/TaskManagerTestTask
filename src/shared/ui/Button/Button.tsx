@@ -12,6 +12,7 @@ import cls from './Button.module.scss';
 
 export type ButtonVariant = 'clear' | 'outline' | 'filled';
 export type ButtonColor = 'normal' | 'success' | 'error';
+export type ButtonForm = 'rounded' | 'square';
 
 export type ButtonSize = 'm' | 'l' | 'xl';
 
@@ -19,6 +20,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     className?: string;
     variant?: ButtonVariant;
     size?: ButtonSize;
+    form?: ButtonForm;
     disabled?: boolean;
     children?: React.ReactNode;
     fullWidth?: boolean;
@@ -39,6 +41,7 @@ export const Button: FC<ButtonProps> = forwardRef(
             addonLeft,
             addonRight,
             color = 'normal',
+            form = 'rounded',
             ...otherProps
         } = props;
 
@@ -53,6 +56,7 @@ export const Button: FC<ButtonProps> = forwardRef(
             cls[size],
             cls[variant],
             cls[color],
+            cls[form],
         ];
 
         return (
