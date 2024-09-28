@@ -1,12 +1,12 @@
 import { makeAutoObservable } from 'mobx';
 
-export type TaskProps = {
+export interface TaskProps {
     className?: string;
     id: string;
     name: string;
     children: TaskProps[];
     TaskContent?: string;
-};
+}
 
 class TaskListStore {
     TaskListData: TaskProps[] = [
@@ -41,6 +41,7 @@ class TaskListStore {
                     children: [],
                 },
             ],
+            TaskContent: 'выполнить все задачи',
         },
         {
             id: '2',
@@ -57,12 +58,15 @@ class TaskListStore {
 
     activeTaskId: string = '';
 
+    activeTask: TaskProps | null = null;
+
     constructor() {
         makeAutoObservable(this);
     }
 
     setActiveTask(task: TaskProps) {
-        this.activeTaskId = task.id;
+        this.activeTask = task;
+        this.activeTaskId = this.activeTask.id;
         this.generateTaskId();
     }
 
@@ -101,11 +105,11 @@ class TaskListStore {
         return nextTaskId;
     }
 
-    AddTask() {
+    AddTask(name: string, TaskContent: string) {
         console.log(this.generateTaskId());
     }
 
-    AddNewBigTask() {
+    AddNewBigTask(name: string, TaskContent: string) {
         return [this.generateTaskId()];
     }
 }
