@@ -102,7 +102,7 @@ class TaskListStore {
     }
 
     AddTask() {
-        return [this.generateTaskId()];
+        console.log(this.generateTaskId());
     }
 
     AddNewBigTask() {
