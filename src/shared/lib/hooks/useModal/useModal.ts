@@ -46,13 +46,10 @@ export function useModal(props: UseModalProps) {
         [close],
     );
 
-    // для очистки таймеров нужно делать это в useEffect, на всякий случай
-    // елси вдруг окно будет демонтировано из домдерева
     useEffect(() => {
         if (isOpen) {
             window.addEventListener('keydown', onKeyDown);
         }
-        // ретерн сработает прямо перед демонтажем компонента
         return () => {
             clearTimeout(timerRef.current);
             window.removeEventListener('keydown', onKeyDown);

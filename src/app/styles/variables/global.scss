@@ -2,7 +2,6 @@
     --font-family-text: "Nunito Sans", sans-serif;
     --font-family-header: "Roboto", sans-serif;
 
-    // Consolas / times
     // шрифты
     // s
     --font-size-s: 12px;
@@ -23,4 +22,10 @@
     --font-size-xl: 32px;
     --font-line-xl: 40px;
     --font-xl: var(--font-size-xl) / var(--font-line-xl) var(--font-family-header);
+
+    // другие цвета
+    --overlay-color: rgb(0 0 0 / 60%);
+
+    // z-index
+    --modal-z-index: 100;
 }

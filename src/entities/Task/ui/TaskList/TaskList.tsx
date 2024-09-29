@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
+import { Card } from 'src/shared/ui/Card';
 
 import cls from './TaskList.module.scss';
 import { TaskProps } from '../../model/store/TaskListStore';
@@ -17,9 +18,11 @@ export const TaskList: React.FC<TaskListProps> = (props) => {
     return (
         <div className={classNames(cls.taskList, {}, [])}>
             <TaskListHeader />
-            {data.map((task) => (
-                <Task key={task.id} task={task} />
-            ))}
+            <Card variant="light">
+                {data.map((task) => (
+                    <Task key={task.id} task={task} />
+                ))}
+            </Card>
         </div>
     );
 };

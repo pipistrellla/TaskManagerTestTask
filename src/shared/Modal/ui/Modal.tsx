@@ -41,6 +41,7 @@ export const Modal: FC<modalProps> = (props) => {
 
     const additionalClasses = [className, cls.modal];
 
+    console.log(isMounted);
     return (
         <Portal>
             <div className={classNames(cls.Modal, mods, additionalClasses)}>

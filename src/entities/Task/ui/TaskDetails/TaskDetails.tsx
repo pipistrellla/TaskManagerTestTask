@@ -19,22 +19,27 @@ export const TaskDetails: FC<TaskDetailsProps> = memo((props) => {
         return null;
     }
 
-    let content;
+    let subTasks;
 
     if (task.children.length === 0) {
-        content = null;
+        subTasks = null;
     } else {
-        content = task.children.map((item) => (
-            <Text text={`${item.id} ${item.name}`} />
-        ));
+        subTasks = (
+            <VStack gap="8">
+                <Text bold title="Подзадачи:" />
+                {task.children.map((item) => (
+                    <Text key={item.id} text={`${item.id} ${item.name}`} />
+                ))}
+            </VStack>
+        );
     }
 
     return (
         <div className={classNames(cls.taskDetails, {}, [className])}>
             <VStack gap="32">
-                <Text title={`${task.id} ${task.name}`} size="l" />
-                <Text title="Подзадачи:" />
-                {content}
+                <Text bold title={`${task.id} ${task.name}`} size="l" />
+                {task.TaskContent && <Text size="l" text={task.TaskContent} />}
+                {subTasks}
             </VStack>
         </div>
     );

@@ -4,7 +4,7 @@ import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
 
 import cls from './Text.module.scss';
 
-export type textVariant = 'primary' | 'error' | 'accent';
+export type textVariant = 'primary' | 'accent';
 
 export type TextAlign = 'right' | 'left' | 'center';
 
@@ -43,20 +43,13 @@ export const Text: FC<TextProps> = memo((props: TextProps) => {
         align = 'left',
         size = 'm',
         bold,
-        'data-testid': dataTestId = 'Text',
         ...otherProps
     } = props;
     // грубо говоря по размеру определяем какой тип h нужен,
     // а затем находим его по ключу и вставляем в разметку
     const HeaderTag = mapSizeToHeaderTag[size];
     const SizeClass = mapSizeToClass[size];
-
-    const additionalClasses = [
-        className,
-        cls[variant],
-        cls[align],
-        cls[SizeClass],
-    ];
+    const additionalClasses = [className, cls[variant], cls[align], SizeClass];
 
     return (
         <div
@@ -66,19 +59,8 @@ export const Text: FC<TextProps> = memo((props: TextProps) => {
                 additionalClasses,
             )}
         >
-            {title && (
-                <HeaderTag
-                    data-testid={`${dataTestId}.Header`}
-                    className={cls.title}
-                >
-                    {title}
-                </HeaderTag>
-            )}
-            {text && (
-                <p data-testid={`${dataTestId}.Paragraph`} className={cls.text}>
-                    {text}
-                </p>
-            )}
+            {title && <HeaderTag className={cls.title}>{title}</HeaderTag>}
+            {text && <p className={cls.text}>{text}</p>}
         </div>
     );
 });

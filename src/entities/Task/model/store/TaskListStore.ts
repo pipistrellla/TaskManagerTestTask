@@ -6,6 +6,7 @@ export interface TaskProps {
     name: string;
     children: TaskProps[];
     TaskContent?: string;
+    selected: boolean;
 }
 
 class TaskListStore {
@@ -13,20 +14,24 @@ class TaskListStore {
         {
             id: '1',
             name: 'Node 1',
+            selected: false,
             children: [
                 {
                     id: '1.1',
                     name: 'Node 1.1',
+                    selected: false,
                     children: [
                         {
                             id: '1.1.1',
                             name: 'Node 1.1.1',
                             children: [],
+                            selected: true,
                         },
                         {
                             id: '1.1.2',
                             name: 'Node 1.1.2',
                             children: [],
+                            selected: false,
                         },
                     ],
                 },
@@ -34,11 +39,13 @@ class TaskListStore {
                     id: '1.2',
                     name: 'Node 1.2',
                     children: [],
+                    selected: false,
                 },
                 {
                     id: '1.3',
                     name: 'Node 1.3',
                     children: [],
+                    selected: false,
                 },
             ],
             TaskContent: 'выполнить все задачи',
@@ -46,11 +53,13 @@ class TaskListStore {
         {
             id: '2',
             name: 'Node 2',
+            selected: false,
             children: [
                 {
                     id: '2.1',
                     name: 'Node 2.1',
                     children: [],
+                    selected: true,
                 },
             ],
         },
@@ -59,6 +68,8 @@ class TaskListStore {
     activeTaskId: string = '';
 
     activeTask: TaskProps | null = null;
+
+    editedTask: TaskProps | null = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -111,6 +122,10 @@ class TaskListStore {
 
     AddNewBigTask(name: string, TaskContent: string) {
         return [this.generateTaskId()];
+    }
+
+    EditTask(editedTask: TaskProps) {
+        this.activeTask = { ...editedTask };
     }
 }
 
