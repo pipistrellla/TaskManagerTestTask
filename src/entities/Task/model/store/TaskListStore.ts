@@ -104,6 +104,8 @@ class TaskListStore {
                 deleteFrom.splice(index, 1);
             }
         });
+
+        this.activeTask = null;
     }
 
     private generateTaskId() {
@@ -117,6 +119,8 @@ class TaskListStore {
 
     AddNewTask() {
         if (this.tempTask) {
+            this.setTempTask();
+            this.tempTask = { ...this.tempTask, id: this.generateTaskId() };
             this.TaskListData.push(this.tempTask);
             console.log(this.TaskListData);
         }
@@ -124,12 +128,16 @@ class TaskListStore {
 
     AddNewBigTask() {
         if (this.tempTask) {
+            this.setTempTask();
+            this.tempTask = {
+                ...this.tempTask,
+                id: `${this.TaskListData.length}`,
+            };
             this.TaskListData.push(this.tempTask);
-            console.log(this.TaskListData);
         }
     }
 
-    SetNewTaskDescription(taskDescription: string) {
+    SetTempTaskDescription(taskDescription: string) {
         if (this.tempTask) {
             this.tempTask = {
                 ...this.tempTask,
@@ -138,7 +146,7 @@ class TaskListStore {
         }
     }
 
-    SetNewTaskName(taskName: string) {
+    SetTempTaskName(taskName: string) {
         if (this.tempTask) {
             this.tempTask = {
                 ...this.tempTask,
@@ -147,11 +155,11 @@ class TaskListStore {
         }
     }
 
-    ClearTestTask() {
+    private ClearTempTask() {
         this.tempTask = null;
     }
 
-    setTestTask() {
+    private setTempTask() {
         this.tempTask = {
             name: '',
             children: [],
@@ -161,11 +169,19 @@ class TaskListStore {
         };
     }
 
-    EditTask() {
+    SetEditTask() {
         if (this.activeTask) {
             this.tempTask = { ...this.activeTask };
         }
     }
+
+    SaveEditTask() {
+        if (this.tempTask) {
+            this.activeTask = { ...this.tempTask };
+        }
+    }
+
+    // InvertSelected(id: string) {}
 }
 
 export default new TaskListStore();

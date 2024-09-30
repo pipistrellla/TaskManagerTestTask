@@ -1,5 +1,6 @@
-import React, { FC, memo, useCallback, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
+import { observer } from 'mobx-react-lite';
 import { TaskListStore } from 'src/entities/Task';
 import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
 import { Modal } from 'src/shared/Modal';
@@ -7,13 +8,11 @@ import { Button } from 'src/shared/ui/Button/Button';
 import { VStack, HStack } from 'src/shared/ui/Stack';
 import { Text } from 'src/shared/ui/Text';
 
-import cls from './DeleteTask.module.scss';
-
 interface DeleteTaskProps {
     className?: string;
 }
 
-export const DeleteTask: FC<DeleteTaskProps> = memo((props) => {
+export const DeleteTask: FC<DeleteTaskProps> = observer((props) => {
     const { className } = props;
     const [editedTask, setEditedTask] = useState({
         ...TaskListStore.activeTask,
@@ -28,9 +27,15 @@ export const DeleteTask: FC<DeleteTaskProps> = memo((props) => {
     const CloseModalHandler = useCallback(() => {
         setIsModalOpen(false);
     }, []);
+
     return (
-        <div className={classNames(cls.deleteTask, {}, [className])}>
-            <Button onClick={DeleteTaskHandler}>Удалить текущую задачу</Button>
+        <div className={classNames('', {}, [className])}>
+            <Button
+                disabled={!TaskListStore.activeTask}
+                onClick={DeleteTaskHandler}
+            >
+                Удалить текущую задачу
+            </Button>
 
             <Modal lazy onClose={CloseModalHandler} isOpen={isModalOpen}>
                 <VStack gap="24">

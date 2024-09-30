@@ -18,15 +18,11 @@ interface EditTaskProps {
 export const EditTask: FC<EditTaskProps> = observer((props) => {
     const { className } = props;
 
-    const [editedTask, setEditedTask] = useState({
-        ...TaskListStore.activeTask,
-    });
-
     const [isModalOpen, setIsModalOpen] = useState<boolean>();
 
     const EditTaskHandler = useCallback(() => {
         setIsModalOpen(true);
-        TaskListStore.EditTask();
+        TaskListStore.SetEditTask();
     }, []);
 
     const CloseModalHandler = useCallback(() => {
@@ -34,11 +30,11 @@ export const EditTask: FC<EditTaskProps> = observer((props) => {
     }, []);
 
     const onChangeTaskNameHandler = useCallback((value: string) => {
-        TaskListStore.SetNewTaskName(value);
+        TaskListStore.SetTempTaskName(value);
     }, []);
 
     const onChangeTaskDescription = useCallback((value: string) => {
-        TaskListStore.SetNewTaskDescription(value);
+        TaskListStore.SetTempTaskDescription(value);
     }, []);
 
     return (
@@ -52,16 +48,21 @@ export const EditTask: FC<EditTaskProps> = observer((props) => {
 
             <Modal lazy onClose={CloseModalHandler} isOpen={isModalOpen}>
                 <VStack gap="24">
-                    <Text title="Редактирование задачи" />
+                    <Text className={cls.Modal} title="Редактирование задачи" />
 
-                    <Input value={TaskListStore.tempTask?.name} />
                     <Input
-                        size="l"
+                        value={TaskListStore.tempTask?.name}
+                        onChange={onChangeTaskNameHandler}
+                    />
+                    <Input
                         value={TaskListStore.tempTask?.description}
+                        onChange={onChangeTaskDescription}
                     />
 
-                    <HStack justify="end" max>
-                        <Button>сохранить</Button>
+                    <HStack justify="between" max>
+                        <Button onClick={TaskListStore.SaveEditTask}>
+                            сохранить
+                        </Button>
                         <Button onClick={CloseModalHandler}>отменить</Button>
                     </HStack>
                 </VStack>

@@ -17,10 +17,6 @@ interface CreateTaskProps {
 
 export const CreateTask: FC<CreateTaskProps> = observer((props) => {
     const { className } = props;
-    const [Task, setTask] = useState({
-        ...TaskListStore.activeTask,
-    });
-
     const [isModalOpen, setIsModalOpen] = useState<boolean>();
 
     const addSubTaskHandler = useCallback(() => {
@@ -32,33 +28,37 @@ export const CreateTask: FC<CreateTaskProps> = observer((props) => {
     }, []);
 
     const onChangeTaskNameHandler = useCallback((value: string) => {
-        TaskListStore.SetNewTaskName(value);
+        TaskListStore.SetTempTaskName(value);
     }, []);
 
     const onChangeTaskDescription = useCallback((value: string) => {
-        TaskListStore.SetNewTaskDescription(value);
+        TaskListStore.SetTempTaskDescription(value);
     }, []);
 
     // вынести создание в отдельные функции
     return (
         <div className={classNames(cls.createTask, {}, [className])}>
-            <Button onClick={addSubTaskHandler}>Создание задачи</Button>
+            <Button
+                disabled={!TaskListStore.activeTask}
+                onClick={addSubTaskHandler}
+            >
+                Создание задачи
+            </Button>
 
             <Modal lazy onClose={CloseModalHandler} isOpen={isModalOpen}>
                 <VStack gap="24">
-                    <Text title="Создать задачу" />
+                    <Text className={cls.Modal} title="Создать задачу" />
 
                     <Input
-                        value={TaskListStore.tempTask.name}
+                        value={TaskListStore.tempTask?.name}
                         onChange={onChangeTaskNameHandler}
                     />
                     <Input
-                        value={TaskListStore.tempTask.description}
+                        value={TaskListStore.tempTask?.description}
                         onChange={onChangeTaskDescription}
-                        size="l"
                     />
 
-                    <HStack justify="end" max gap="8">
+                    <HStack justify="center" max gap="32">
                         <Button onClick={TaskListStore.AddNewBigTask}>
                             Создать новую задачу
                         </Button>
