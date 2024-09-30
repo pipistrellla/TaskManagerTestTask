@@ -1,6 +1,8 @@
 import React from 'react';
 
+import { observer } from 'mobx-react-lite';
 import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
+import { Card } from 'src/shared/ui/Card';
 
 import cls from './TaskList.module.scss';
 import { TaskProps } from '../../model/store/TaskListStore';
@@ -11,15 +13,17 @@ export type TaskListProps = {
     data: TaskProps[];
 };
 
-export const TaskList: React.FC<TaskListProps> = (props) => {
+export const TaskList: React.FC<TaskListProps> = observer((props) => {
     const { data } = props;
 
     return (
         <div className={classNames(cls.taskList, {}, [])}>
             <TaskListHeader />
-            {data.map((task) => (
-                <Task key={task.id} task={task} />
-            ))}
+            <Card variant="light">
+                {data.map((task) => (
+                    <Task key={task.id} task={task} />
+                ))}
+            </Card>
         </div>
     );
-};
+});

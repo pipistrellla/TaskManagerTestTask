@@ -1,5 +1,6 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 
+import { observer } from 'mobx-react-lite';
 import { TaskProps } from 'src/entities/Task/model/store/TaskListStore';
 import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
 import { VStack } from 'src/shared/ui/Stack';
@@ -12,29 +13,34 @@ interface TaskDetailsProps {
     task: TaskProps | null;
 }
 
-export const TaskDetails: FC<TaskDetailsProps> = memo((props) => {
+export const TaskDetails: FC<TaskDetailsProps> = observer((props) => {
     const { className, task } = props;
 
     if (!task) {
         return null;
     }
 
-    let content;
+    let subTasks;
 
     if (task.children.length === 0) {
-        content = null;
+        subTasks = null;
     } else {
-        content = task.children.map((item) => (
-            <Text text={`${item.id} ${item.name}`} />
-        ));
+        subTasks = (
+            <VStack gap="8">
+                <Text bold title="Подзадачи:" />
+                {task.children.map((item) => (
+                    <Text key={item.id} text={`${item.id} ${item.name}`} />
+                ))}
+            </VStack>
+        );
     }
 
     return (
         <div className={classNames(cls.taskDetails, {}, [className])}>
             <VStack gap="32">
-                <Text title={`${task.id} ${task.name}`} size="l" />
-                <Text title="Подзадачи:" />
-                {content}
+                <Text bold title={`${task.id} ${task.name}`} size="l" />
+                {task.description && <Text size="l" text={task.description} />}
+                {subTasks}
             </VStack>
         </div>
     );
