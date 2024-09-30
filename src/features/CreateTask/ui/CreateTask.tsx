@@ -49,11 +49,11 @@ export const CreateTask: FC<CreateTaskProps> = observer((props) => {
                     <Text title="Создать задачу" />
 
                     <Input
-                        value={TaskListStore.newTask.name}
+                        value={TaskListStore.tempTask.name}
                         onChange={onChangeTaskNameHandler}
                     />
                     <Input
-                        value={TaskListStore.newTask.description}
+                        value={TaskListStore.tempTask.description}
                         onChange={onChangeTaskDescription}
                         size="l"
                     />

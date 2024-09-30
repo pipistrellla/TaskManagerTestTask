@@ -68,15 +68,7 @@ class TaskListStore {
 
     activeTask: TaskProps | null = null;
 
-    editedTask: TaskProps | null = null;
-
-    newTask: TaskProps = {
-        name: '',
-        children: [],
-        id: '',
-        selected: false,
-        description: '',
-    };
+    tempTask: TaskProps | null = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -124,31 +116,55 @@ class TaskListStore {
     }
 
     AddNewTask() {
-        console.log(this.activeTask);
+        if (this.tempTask) {
+            this.TaskListData.push(this.tempTask);
+            console.log(this.TaskListData);
+        }
     }
 
     AddNewBigTask() {
-        console.log(this.activeTask);
+        if (this.tempTask) {
+            this.TaskListData.push(this.tempTask);
+            console.log(this.TaskListData);
+        }
     }
 
     SetNewTaskDescription(taskDescription: string) {
-        this.newTask = {
-            ...this.newTask,
-            description: taskDescription,
-        };
-        console.log(this.newTask);
+        if (this.tempTask) {
+            this.tempTask = {
+                ...this.tempTask,
+                description: taskDescription,
+            };
+        }
     }
 
     SetNewTaskName(taskName: string) {
-        this.newTask = {
-            ...this.newTask,
-            name: taskName,
-        };
-        console.log(this.newTask);
+        if (this.tempTask) {
+            this.tempTask = {
+                ...this.tempTask,
+                name: taskName,
+            };
+        }
     }
 
-    EditTask(editedTask: TaskProps) {
-        this.activeTask = { ...editedTask };
+    ClearTestTask() {
+        this.tempTask = null;
+    }
+
+    setTestTask() {
+        this.tempTask = {
+            name: '',
+            children: [],
+            id: '',
+            selected: false,
+            description: '',
+        };
+    }
+
+    EditTask() {
+        if (this.activeTask) {
+            this.tempTask = { ...this.activeTask };
+        }
     }
 }
 
