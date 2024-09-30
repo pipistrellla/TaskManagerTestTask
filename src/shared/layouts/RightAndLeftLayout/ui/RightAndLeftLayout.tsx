@@ -16,7 +16,7 @@ export const RightAndLeftLayout: FC<RightAndLeftLayoutProps> = (props) => {
     return (
         <div className={classNames(cls.rightAndLeftLayout, {}, [className])}>
             <div className={classNames(cls.right, {}, [className])}>
-                {rightContent}{' '}
+                {rightContent}
             </div>
             <div className={classNames(cls.left, {}, [className])}>
                 {leftContent}

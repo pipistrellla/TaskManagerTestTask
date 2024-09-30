@@ -1,5 +1,6 @@
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 
+import { observer } from 'mobx-react-lite';
 import { TaskProps } from 'src/entities/Task/model/store/TaskListStore';
 import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
 import { VStack } from 'src/shared/ui/Stack';
@@ -12,7 +13,7 @@ interface TaskDetailsProps {
     task: TaskProps | null;
 }
 
-export const TaskDetails: FC<TaskDetailsProps> = memo((props) => {
+export const TaskDetails: FC<TaskDetailsProps> = observer((props) => {
     const { className, task } = props;
 
     if (!task) {
@@ -38,7 +39,7 @@ export const TaskDetails: FC<TaskDetailsProps> = memo((props) => {
         <div className={classNames(cls.taskDetails, {}, [className])}>
             <VStack gap="32">
                 <Text bold title={`${task.id} ${task.name}`} size="l" />
-                {task.TaskContent && <Text size="l" text={task.TaskContent} />}
+                {task.description && <Text size="l" text={task.description} />}
                 {subTasks}
             </VStack>
         </div>

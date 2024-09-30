@@ -1,11 +1,10 @@
 import { makeAutoObservable } from 'mobx';
 
 export interface TaskProps {
-    className?: string;
     id: string;
     name: string;
     children: TaskProps[];
-    TaskContent?: string;
+    description?: string;
     selected: boolean;
 }
 
@@ -48,7 +47,7 @@ class TaskListStore {
                     selected: false,
                 },
             ],
-            TaskContent: 'выполнить все задачи',
+            description: 'выполнить все задачи',
         },
         {
             id: '2',
@@ -65,11 +64,19 @@ class TaskListStore {
         },
     ];
 
-    activeTaskId: string = '';
+    private activeTaskId: string = '';
 
     activeTask: TaskProps | null = null;
 
     editedTask: TaskProps | null = null;
+
+    newTask: TaskProps = {
+        name: '',
+        children: [],
+        id: '',
+        selected: false,
+        description: '',
+    };
 
     constructor() {
         makeAutoObservable(this);
@@ -116,12 +123,28 @@ class TaskListStore {
         return nextTaskId;
     }
 
-    AddTask(name: string, TaskContent: string) {
-        console.log(this.generateTaskId());
+    AddNewTask() {
+        console.log(this.activeTask);
     }
 
-    AddNewBigTask(name: string, TaskContent: string) {
-        return [this.generateTaskId()];
+    AddNewBigTask() {
+        console.log(this.activeTask);
+    }
+
+    SetNewTaskDescription(taskDescription: string) {
+        this.newTask = {
+            ...this.newTask,
+            description: taskDescription,
+        };
+        console.log(this.newTask);
+    }
+
+    SetNewTaskName(taskName: string) {
+        this.newTask = {
+            ...this.newTask,
+            name: taskName,
+        };
+        console.log(this.newTask);
     }
 
     EditTask(editedTask: TaskProps) {

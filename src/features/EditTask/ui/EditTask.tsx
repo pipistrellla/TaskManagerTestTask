@@ -31,6 +31,14 @@ export const EditTask: FC<EditTaskProps> = memo((props) => {
         setIsModalOpen(false);
     }, []);
 
+    const onChangeTaskNameHandler = useCallback((value: string) => {
+        TaskListStore.SetNewTaskName(value);
+    }, []);
+
+    const onChangeTaskDescription = useCallback((value: string) => {
+        TaskListStore.SetNewTaskDescription(value);
+    }, []);
+
     return (
         <div className={classNames(cls.editTask, {}, [className])}>
             <Button onClick={EditTaskHandler}>Редактировать задачу</Button>

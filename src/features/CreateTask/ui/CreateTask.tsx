@@ -1,5 +1,6 @@
-import React, { FC, memo, useCallback, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
+import { observer } from 'mobx-react-lite';
 import { TaskListStore } from 'src/entities/Task';
 import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
 import { Modal } from 'src/shared/Modal';
@@ -14,7 +15,7 @@ interface CreateTaskProps {
     className?: string;
 }
 
-export const CreateTask: FC<CreateTaskProps> = memo((props) => {
+export const CreateTask: FC<CreateTaskProps> = observer((props) => {
     const { className } = props;
     const [Task, setTask] = useState({
         ...TaskListStore.activeTask,
@@ -30,6 +31,15 @@ export const CreateTask: FC<CreateTaskProps> = memo((props) => {
         setIsModalOpen(false);
     }, []);
 
+    const onChangeTaskNameHandler = useCallback((value: string) => {
+        TaskListStore.SetNewTaskName(value);
+    }, []);
+
+    const onChangeTaskDescription = useCallback((value: string) => {
+        TaskListStore.SetNewTaskDescription(value);
+    }, []);
+
+    // вынести создание в отдельные функции
     return (
         <div className={classNames(cls.createTask, {}, [className])}>
             <Button onClick={addSubTaskHandler}>Создание задачи</Button>
@@ -38,11 +48,23 @@ export const CreateTask: FC<CreateTaskProps> = memo((props) => {
                 <VStack gap="24">
                     <Text title="Создать задачу" />
 
-                    <Input />
-                    <Input size="l" />
+                    <Input
+                        value={TaskListStore.newTask.name}
+                        onChange={onChangeTaskNameHandler}
+                    />
+                    <Input
+                        value={TaskListStore.newTask.description}
+                        onChange={onChangeTaskDescription}
+                        size="l"
+                    />
 
-                    <HStack justify="end" max>
-                        <Button>Создать</Button>
+                    <HStack justify="end" max gap="8">
+                        <Button onClick={TaskListStore.AddNewBigTask}>
+                            Создать новую задачу
+                        </Button>
+                        <Button onClick={TaskListStore.AddNewTask}>
+                            Создать подзадачу
+                        </Button>
                         <Button onClick={CloseModalHandler}>Отменить</Button>
                     </HStack>
                 </VStack>

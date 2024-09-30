@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { observer } from 'mobx-react-lite';
 import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
 import { Card } from 'src/shared/ui/Card';
 
@@ -12,7 +13,7 @@ export type TaskListProps = {
     data: TaskProps[];
 };
 
-export const TaskList: React.FC<TaskListProps> = (props) => {
+export const TaskList: React.FC<TaskListProps> = observer((props) => {
     const { data } = props;
 
     return (
@@ -25,4 +26,4 @@ export const TaskList: React.FC<TaskListProps> = (props) => {
             </Card>
         </div>
     );
-};
+});
