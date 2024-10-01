@@ -37,6 +37,11 @@ export const EditTask: FC<EditTaskProps> = observer((props) => {
         TaskListStore.SetTempTaskDescription(value);
     }, []);
 
+    const onClickSaveEditedTask = useCallback(() => {
+        TaskListStore.SaveEditTask();
+        setIsModalOpen(false);
+    }, []);
+
     return (
         <div className={classNames(cls.editTask, {}, [className])}>
             <Button
@@ -60,7 +65,7 @@ export const EditTask: FC<EditTaskProps> = observer((props) => {
                     />
 
                     <HStack justify="between" max>
-                        <Button onClick={TaskListStore.SaveEditTask}>
+                        <Button onClick={onClickSaveEditedTask}>
                             сохранить
                         </Button>
                         <Button onClick={CloseModalHandler}>отменить</Button>

@@ -53,6 +53,7 @@ export function useModal(props: UseModalProps) {
         return () => {
             clearTimeout(timerRef.current);
             window.removeEventListener('keydown', onKeyDown);
+            setIsMounted(false);
         };
     }, [isOpen, onKeyDown]);
 

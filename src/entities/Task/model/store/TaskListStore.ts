@@ -52,7 +52,7 @@ class TaskListStore {
         {
             id: '2',
             name: 'Node 2',
-            selected: false,
+            selected: true,
             children: [
                 {
                     id: '2.1',
@@ -80,14 +80,9 @@ class TaskListStore {
         this.generateTaskId();
     }
 
-    private findCurrentTaskId(): number[] {
-        const taskId = this.activeTaskId.split('.').map((item) => +item);
-        return taskId;
-    }
-
-    private findActiveTaskDimension() {
+    private findTaskDimension(id: string) {
         let currentArray: TaskProps[] = this.TaskListData;
-        const indices: number[] = this.findCurrentTaskId();
+        const indices: number[] = id.split('.').map((item) => +item);
         for (let i = 0; i < indices.length - 1; i += 1) {
             const index = indices[i] - 1;
             currentArray = currentArray[index].children;
@@ -95,9 +90,10 @@ class TaskListStore {
         return currentArray;
     }
 
+    // todo почему крашиться если удалить не последний элемент
     DeleteActiveTask() {
         const id = this.activeTaskId;
-        const deleteFrom = this.findActiveTaskDimension();
+        const deleteFrom = this.findTaskDimension(this.activeTaskId);
 
         deleteFrom.forEach((item, index) => {
             if (item.id === id) {
@@ -109,7 +105,7 @@ class TaskListStore {
     }
 
     private generateTaskId() {
-        const tempArray = this.findActiveTaskDimension();
+        const tempArray = this.findTaskDimension(this.activeTaskId);
         const currentTaskId = +this.activeTaskId[this.activeTaskId.length - 1];
 
         const currentTaskChildren = tempArray[currentTaskId - 1].children;
@@ -119,22 +115,36 @@ class TaskListStore {
 
     AddNewTask() {
         if (this.tempTask) {
-            this.setTempTask();
+            const pushTo = this.findTaskChild(this.activeTaskId);
+
             this.tempTask = { ...this.tempTask, id: this.generateTaskId() };
-            this.TaskListData.push(this.tempTask);
-            console.log(this.TaskListData);
+            pushTo.push(this.tempTask);
         }
+    }
+
+    private findTaskChild(id: string) {
+        let currentArray: TaskProps[] = this.TaskListData;
+        const indices: number[] = id.split('.').map((item) => +item);
+        for (let i = 0; i < indices.length; i += 1) {
+            const index = indices[i] - 1;
+            currentArray = currentArray[index].children;
+        }
+        return currentArray;
     }
 
     AddNewBigTask() {
         if (this.tempTask) {
-            this.setTempTask();
             this.tempTask = {
                 ...this.tempTask,
-                id: `${this.TaskListData.length}`,
+                id: this.GenerateBigTaskId(),
             };
+
             this.TaskListData.push(this.tempTask);
         }
+    }
+
+    private GenerateBigTaskId() {
+        return `${this.TaskListData.length + 1}`;
     }
 
     SetTempTaskDescription(taskDescription: string) {
@@ -155,11 +165,7 @@ class TaskListStore {
         }
     }
 
-    private ClearTempTask() {
-        this.tempTask = null;
-    }
-
-    private setTempTask() {
+    setTempTask() {
         this.tempTask = {
             name: '',
             children: [],
@@ -175,32 +181,62 @@ class TaskListStore {
         }
     }
 
+    // todo разобраться почему не сохраняет внутри
     SaveEditTask() {
         if (this.tempTask) {
-            this.activeTask = { ...this.tempTask };
+            const whereToUpdate = this.findTaskDimension(this.tempTask.id);
         }
+
+        console.log(this.TaskListData);
     }
 
     InvertSelected(id: string) {
         const changeHere = this.findTaskDimension(id);
-        console.log(changeHere);
-
         changeHere.forEach((item, index) => {
             if (item.id === id) {
                 changeHere[index].selected = !changeHere[index].selected;
+                this.changeSelectedForAllTasks(changeHere[index].selected);
             }
         });
     }
 
-    private findTaskDimension(id: string) {
-        let currentArray: TaskProps[] = this.TaskListData;
-        const indices: number[] = id.split('.').map((item) => +item);
-        for (let i = 0; i < indices.length - 1; i += 1) {
-            const index = indices[i] - 1;
-            currentArray = currentArray[index].children;
-        }
-        return currentArray;
+    changeSelectedForAllTasks(newValue: boolean) {
+        this.TaskListData = this.TaskListData.map((task) => ({
+            ...task,
+            selected: newValue,
+            children: this.changeSelectedForAllTasksRecursive(
+                task.children,
+                newValue,
+            ),
+        }));
     }
+
+    private changeSelectedForAllTasksRecursive(
+        tasks: TaskProps[],
+        newValue: boolean,
+    ): TaskProps[] {
+        return tasks.map((task) => ({
+            ...task,
+            selected: newValue,
+            children: this.changeSelectedForAllTasksRecursive(
+                task.children,
+                newValue,
+            ),
+        }));
+    }
+
+    // private setLocalStorageData() {
+    //     this.TaskListData = JSON.parse(
+    //         localStorage.getItem(TASK_LIST_LOCALSTORAGE),
+    //     );
+    // }
+
+    // private takeLocalStorageData() {
+    //     localStorage.setItem(
+    //         TASK_LIST_LOCALSTORAGE,
+    //         JSON.stringify(this.TaskListData),
+    //     );
+    // }
 }
 
 export default new TaskListStore();
