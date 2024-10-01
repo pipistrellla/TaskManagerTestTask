@@ -181,7 +181,26 @@ class TaskListStore {
         }
     }
 
-    // InvertSelected(id: string) {}
+    InvertSelected(id: string) {
+        const changeHere = this.findTaskDimension(id);
+        console.log(changeHere);
+
+        changeHere.forEach((item, index) => {
+            if (item.id === id) {
+                changeHere[index].selected = !changeHere[index].selected;
+            }
+        });
+    }
+
+    private findTaskDimension(id: string) {
+        let currentArray: TaskProps[] = this.TaskListData;
+        const indices: number[] = id.split('.').map((item) => +item);
+        for (let i = 0; i < indices.length - 1; i += 1) {
+            const index = indices[i] - 1;
+            currentArray = currentArray[index].children;
+        }
+        return currentArray;
+    }
 }
 
 export default new TaskListStore();

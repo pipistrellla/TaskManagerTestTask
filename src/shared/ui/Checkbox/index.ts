@@ -1,3 +1,3 @@
-import { Checkbox } from '@headlessui/react';
+import { Checkbox } from './ui/Checkbox';
 
 export { Checkbox };

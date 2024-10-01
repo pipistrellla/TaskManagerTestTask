@@ -1,17 +1,21 @@
-import { useState } from 'react';
+import { Checkbox as HeadlessCheckbox } from '@headlessui/react';
 
-import { Checkbox } from '@headlessui/react';
+interface CheckboxProps {
+    className: string;
+    checked: boolean;
+    setChecked: () => void;
+}
 
-function Example() {
-    const [enabled, setEnabled] = useState(false);
+export function Checkbox(props: CheckboxProps) {
+    const { className, checked, setChecked } = props;
 
     return (
-        <Checkbox
-            checked={enabled}
-            onChange={setEnabled}
+        <HeadlessCheckbox
+            checked={checked}
+            onChange={setChecked}
+            data-checked
             className="group block size-4 rounded border bg-white data-[checked]:bg-blue-500"
         >
-            {/* Checkmark icon */}
             <svg
                 className="stroke-white opacity-0 group-data-[checked]:opacity-100"
                 viewBox="0 0 14 14"
@@ -24,6 +28,6 @@ function Example() {
                     strokeLinejoin="round"
                 />
             </svg>
-        </Checkbox>
+        </HeadlessCheckbox>
     );
 }

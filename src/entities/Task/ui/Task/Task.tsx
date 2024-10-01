@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 
+import { observer } from 'mobx-react-lite';
 import ArrowLogo from 'src/shared/assets/icons/arrow.svg';
 import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
 import { Button } from 'src/shared/ui/Button/Button';
 import { Card } from 'src/shared/ui/Card';
+import { Checkbox } from 'src/shared/ui/Checkbox';
 import { HStack } from 'src/shared/ui/Stack';
 
 import cls from './Task.module.scss';
@@ -14,7 +16,7 @@ export type TaskNodeProps = {
     className?: string;
 };
 
-export const Task: React.FC<TaskNodeProps> = (props) => {
+export const Task: React.FC<TaskNodeProps> = observer((props) => {
     const { task, className } = props;
     const [isOpen, setIsOpen] = useState(false);
 
@@ -51,9 +53,11 @@ export const Task: React.FC<TaskNodeProps> = (props) => {
                             {task.id} {task.name}
                         </Button>
                     </HStack>
-                    <Button className={cls.checkbox} disabled={task.selected}>
-                        123
-                    </Button>
+                    <Checkbox
+                        className={cls.checkbox}
+                        setChecked={() => TaskListStore.InvertSelected(task.id)}
+                        checked={task.selected}
+                    />
                 </HStack>
             </Card>
             {isOpen && task.children && (
@@ -69,4 +73,4 @@ export const Task: React.FC<TaskNodeProps> = (props) => {
             )}
         </div>
     );
-};
+});
