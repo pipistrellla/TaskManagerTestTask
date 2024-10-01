@@ -74,13 +74,12 @@ class TaskListStore {
         makeAutoObservable(this);
     }
 
-    setActiveTask(task: TaskProps) {
+    setActiveTask(task: TaskProps): void {
         this.activeTask = task;
         this.activeTaskId = this.activeTask.id;
-        this.generateTaskId();
     }
 
-    private findTaskDimension(id: string) {
+    private findTaskDimension(id: string): TaskProps[] {
         let currentArray: TaskProps[] = this.TaskListData;
         const indices: number[] = id.split('.').map((item) => +item);
         for (let i = 0; i < indices.length - 1; i += 1) {
@@ -91,7 +90,7 @@ class TaskListStore {
     }
 
     // todo почему крашиться если удалить не последний элемент
-    DeleteActiveTask() {
+    DeleteActiveTask(): void {
         const id = this.activeTaskId;
         const deleteFrom = this.findTaskDimension(this.activeTaskId);
 
@@ -104,7 +103,7 @@ class TaskListStore {
         this.activeTask = null;
     }
 
-    private generateTaskId() {
+    private generateTaskId(): string {
         const tempArray = this.findTaskDimension(this.activeTaskId);
         const currentTaskId = +this.activeTaskId[this.activeTaskId.length - 1];
 
@@ -113,7 +112,7 @@ class TaskListStore {
         return nextTaskId;
     }
 
-    AddNewTask() {
+    AddNewTask(): void {
         if (this.tempTask) {
             const pushTo = this.findTaskChild(this.activeTaskId);
 
@@ -122,7 +121,7 @@ class TaskListStore {
         }
     }
 
-    private findTaskChild(id: string) {
+    private findTaskChild(id: string): TaskProps[] {
         let currentArray: TaskProps[] = this.TaskListData;
         const indices: number[] = id.split('.').map((item) => +item);
         for (let i = 0; i < indices.length; i += 1) {
@@ -132,7 +131,7 @@ class TaskListStore {
         return currentArray;
     }
 
-    AddNewBigTask() {
+    AddNewBigTask(): void {
         if (this.tempTask) {
             this.tempTask = {
                 ...this.tempTask,
@@ -143,11 +142,11 @@ class TaskListStore {
         }
     }
 
-    private GenerateBigTaskId() {
+    private GenerateBigTaskId(): string {
         return `${this.TaskListData.length + 1}`;
     }
 
-    SetTempTaskDescription(taskDescription: string) {
+    SetTempTaskDescription(taskDescription: string): void {
         if (this.tempTask) {
             this.tempTask = {
                 ...this.tempTask,
@@ -156,7 +155,7 @@ class TaskListStore {
         }
     }
 
-    SetTempTaskName(taskName: string) {
+    SetTempTaskName(taskName: string): void {
         if (this.tempTask) {
             this.tempTask = {
                 ...this.tempTask,
@@ -165,7 +164,7 @@ class TaskListStore {
         }
     }
 
-    setTempTask() {
+    setTempTask(): void {
         this.tempTask = {
             name: '',
             children: [],
@@ -175,14 +174,14 @@ class TaskListStore {
         };
     }
 
-    SetEditTask() {
+    SetEditTask(): void {
         if (this.activeTask) {
             this.tempTask = { ...this.activeTask };
         }
     }
 
     // todo разобраться почему не сохраняет внутри
-    SaveEditTask() {
+    SaveEditTask(): void {
         if (this.tempTask) {
             const whereToUpdate = this.findTaskDimension(this.tempTask.id);
         }
@@ -190,53 +189,55 @@ class TaskListStore {
         console.log(this.TaskListData);
     }
 
-    InvertSelected(id: string) {
+    InvertSelected(id: string): void {
         const changeHere = this.findTaskDimension(id);
         changeHere.forEach((item, index) => {
             if (item.id === id) {
                 changeHere[index].selected = !changeHere[index].selected;
-                this.changeSelectedForAllTasks(changeHere[index].selected);
+                this.setSelectedForAllChildren(id, changeHere[index].selected);
             }
+        });
+        if (id.length > 1) {
+            this.updateSelectedStatus(id);
+        }
+    }
+
+    setSelectedForAllChildren(id: string, value: boolean): void {
+        this.TaskListData.forEach((task) => {
+            this.setSelectedRecursive(task, id, value);
         });
     }
 
-    changeSelectedForAllTasks(newValue: boolean) {
-        this.TaskListData = this.TaskListData.map((task) => ({
-            ...task,
-            selected: newValue,
-            children: this.changeSelectedForAllTasksRecursive(
-                task.children,
-                newValue,
-            ),
-        }));
+    private setSelectedRecursive(
+        task: TaskProps,
+        targetId: string,
+        value: boolean,
+    ): void {
+        if (task.id === targetId) {
+            task.selected = value;
+            task.children.forEach((child) => {
+                this.setSelectedRecursive(child, child.id, value);
+            });
+        } else {
+            task.children.forEach((child) => {
+                this.setSelectedRecursive(child, targetId, value);
+            });
+        }
     }
 
-    private changeSelectedForAllTasksRecursive(
-        tasks: TaskProps[],
-        newValue: boolean,
-    ): TaskProps[] {
-        return tasks.map((task) => ({
-            ...task,
-            selected: newValue,
-            children: this.changeSelectedForAllTasksRecursive(
-                task.children,
-                newValue,
-            ),
-        }));
+    updateSelectedStatus(id: string): void {
+        const whereToCheck = this.findTaskDimension(id);
+        const indices: number[] = id.split('.').map((item) => +item);
+        let tempArray: TaskProps[] = this.TaskListData;
+
+        for (let i = 0; i < indices.length - 2; i += 1) {
+            const index = indices[i] - 1;
+            tempArray = tempArray[index].children;
+        }
+
+        const parent = tempArray[indices[indices.length - 2] - 1];
+        parent.selected = whereToCheck.every((task) => task.selected);
     }
-
-    // private setLocalStorageData() {
-    //     this.TaskListData = JSON.parse(
-    //         localStorage.getItem(TASK_LIST_LOCALSTORAGE),
-    //     );
-    // }
-
-    // private takeLocalStorageData() {
-    //     localStorage.setItem(
-    //         TASK_LIST_LOCALSTORAGE,
-    //         JSON.stringify(this.TaskListData),
-    //     );
-    // }
 }
 
 export default new TaskListStore();
