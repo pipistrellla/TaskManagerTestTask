@@ -74,12 +74,12 @@ class TaskListStore {
         makeAutoObservable(this);
     }
 
-    setActiveTask(task: TaskProps): void {
+    SetActiveTask(task: TaskProps): void {
         this.activeTask = task;
         this.activeTaskId = this.activeTask.id;
     }
 
-    private findTaskDimension(id: string): TaskProps[] {
+    private FindTaskDimension(id: string): TaskProps[] {
         let currentArray: TaskProps[] = this.TaskListData;
         const indices: number[] = id.split('.').map((item) => +item);
         for (let i = 0; i < indices.length - 1; i += 1) {
@@ -89,10 +89,9 @@ class TaskListStore {
         return currentArray;
     }
 
-    // todo почему крашиться если удалить не последний элемент
     DeleteActiveTask(): void {
         const id = this.activeTaskId;
-        const deleteFrom = this.findTaskDimension(this.activeTaskId);
+        const deleteFrom = this.FindTaskDimension(this.activeTaskId);
 
         deleteFrom.forEach((item, index) => {
             if (item.id === id) {
@@ -103,8 +102,8 @@ class TaskListStore {
         this.activeTask = null;
     }
 
-    private generateTaskId(): string {
-        const tempArray = this.findTaskDimension(this.activeTaskId);
+    private GenerateTaskId(): string {
+        const tempArray = this.FindTaskDimension(this.activeTaskId);
         const currentTaskId = +this.activeTaskId[this.activeTaskId.length - 1];
 
         const currentTaskChildren = tempArray[currentTaskId - 1].children;
@@ -116,9 +115,12 @@ class TaskListStore {
         if (this.tempTask) {
             const pushTo = this.findTaskChild(this.activeTaskId);
 
-            this.tempTask = { ...this.tempTask, id: this.generateTaskId() };
+            this.tempTask = { ...this.tempTask, id: this.GenerateTaskId() };
             pushTo.push(this.tempTask);
         }
+
+        // todo попытаться вынести функции
+        this.UpdateSelectedStatus(this.GenerateTaskId());
     }
 
     private findTaskChild(id: string): TaskProps[] {
@@ -164,7 +166,7 @@ class TaskListStore {
         }
     }
 
-    setTempTask(): void {
+    SetTempTask(): void {
         this.tempTask = {
             name: '',
             children: [],
@@ -179,30 +181,42 @@ class TaskListStore {
             this.tempTask = { ...this.activeTask };
         }
     }
+    // todo переделать генератор task id
 
-    // todo разобраться почему не сохраняет внутри
     SaveEditTask(): void {
-        if (this.tempTask) {
-            const whereToUpdate = this.findTaskDimension(this.tempTask.id);
+        const indices: number[] = this.activeTaskId
+            .split('.')
+            .map((item) => +item);
+        let tempArray: TaskProps[] = this.TaskListData;
+
+        for (let i = 0; i < indices.length - 1; i += 1) {
+            const index = indices[i] - 1;
+            tempArray = tempArray[index].children;
         }
 
-        console.log(this.TaskListData);
+        // tempArray[indices[indices.length - 1] - 1] = { ...this.tempTask };
+        if (tempArray) {
+            let parent: TaskProps = tempArray[indices[indices.length - 1] - 1];
+            console.log(this.tempTask);
+
+            parent = { ...parent, ...this.tempTask };
+        }
     }
 
     InvertSelected(id: string): void {
-        const changeHere = this.findTaskDimension(id);
+        const changeHere = this.FindTaskDimension(id);
         changeHere.forEach((item, index) => {
             if (item.id === id) {
                 changeHere[index].selected = !changeHere[index].selected;
-                this.setSelectedForAllChildren(id, changeHere[index].selected);
+                this.SetSelectedForAllChildren(id, changeHere[index].selected);
             }
         });
         if (id.length > 1) {
-            this.updateSelectedStatus(id);
+            this.UpdateSelectedStatus(id);
         }
     }
 
-    setSelectedForAllChildren(id: string, value: boolean): void {
+    SetSelectedForAllChildren(id: string, value: boolean): void {
         this.TaskListData.forEach((task) => {
             this.setSelectedRecursive(task, id, value);
         });
@@ -225,8 +239,8 @@ class TaskListStore {
         }
     }
 
-    updateSelectedStatus(id: string): void {
-        const whereToCheck = this.findTaskDimension(id);
+    UpdateSelectedStatus(id: string): void {
+        const whereToCheck = this.FindTaskDimension(id);
         const indices: number[] = id.split('.').map((item) => +item);
         let tempArray: TaskProps[] = this.TaskListData;
 

@@ -21,7 +21,7 @@ export const CreateTask: FC<CreateTaskProps> = observer((props) => {
 
     const addTaskHandler = useCallback(() => {
         setIsModalOpen(true);
-        TaskListStore.setTempTask();
+        TaskListStore.SetTempTask();
     }, []);
 
     const CloseModalHandler = useCallback(() => {
