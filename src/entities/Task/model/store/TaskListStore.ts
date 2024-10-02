@@ -99,7 +99,17 @@ class TaskListStore {
             }
         });
 
+        this.UpdateIds(this.TaskListData);
         this.activeTask = null;
+    }
+
+    private UpdateIds(tasks: TaskProps[], parentID = '') {
+        tasks.forEach((task, index) => {
+            task.id = parentID ? `${parentID}.${index + 1}` : `${index + 1}`;
+            if (task.children.length > 0) {
+                this.UpdateIds(task.children, task.id);
+            }
+        });
     }
 
     private GenerateTaskId(): string {

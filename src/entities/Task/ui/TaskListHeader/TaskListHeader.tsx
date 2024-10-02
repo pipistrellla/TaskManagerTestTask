@@ -18,8 +18,8 @@ export const TaskListHeader: FC<TaskListHeaderProps> = memo((props) => {
 
     return (
         <div className={classNames(cls.taskListHeader, {}, [className])}>
-            <Card>
-                <HStack max gap="16">
+            <Card variant="light">
+                <HStack justify="center" max gap="16">
                     <CreateTask />
                     <DeleteTask />
                     <EditTask />
