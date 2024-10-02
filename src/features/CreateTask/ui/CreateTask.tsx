@@ -76,7 +76,9 @@ export const CreateTask: FC<CreateTaskProps> = observer((props) => {
                         >
                             Создать подзадачу
                         </Button>
-                        <Button onClick={CloseModalHandler}>Отменить</Button>
+                        <Button color="error" onClick={CloseModalHandler}>
+                            Отменить
+                        </Button>
                     </HStack>
                 </VStack>
             </Modal>

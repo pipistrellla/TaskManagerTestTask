@@ -7,24 +7,24 @@ import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
 import { Card } from 'src/shared/ui/Card';
 import { HStack } from 'src/shared/ui/Stack';
 
-import cls from './TaskListHeader.module.scss';
-
 interface TaskListHeaderProps {
     className?: string;
 }
 
-export const TaskListHeader: FC<TaskListHeaderProps> = memo((props) => {
-    const { className } = props;
+export const TaskListHeader: FC<TaskListHeaderProps> = memo(
+    (props: TaskListHeaderProps) => {
+        const { className } = props;
 
-    return (
-        <div className={classNames(cls.taskListHeader, {}, [className])}>
-            <Card variant="light">
-                <HStack justify="center" max gap="16">
-                    <CreateTask />
-                    <DeleteTask />
-                    <EditTask />
-                </HStack>
-            </Card>
-        </div>
-    );
-});
+        return (
+            <div className={classNames('', {}, [className])}>
+                <Card variant="light">
+                    <HStack justify="center" max gap="16">
+                        <CreateTask />
+                        <DeleteTask />
+                        <EditTask />
+                    </HStack>
+                </Card>
+            </div>
+        );
+    },
+);

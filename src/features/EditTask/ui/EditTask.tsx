@@ -66,10 +66,12 @@ export const EditTask: FC<EditTaskProps> = observer((props) => {
                     />
 
                     <HStack justify="between" max>
-                        <Button onClick={onClickSaveEditedTask}>
+                        <Button color="success" onClick={onClickSaveEditedTask}>
                             сохранить
                         </Button>
-                        <Button onClick={CloseModalHandler}>отменить</Button>
+                        <Button color="error" onClick={CloseModalHandler}>
+                            отменить
+                        </Button>
                     </HStack>
                 </VStack>
             </Modal>

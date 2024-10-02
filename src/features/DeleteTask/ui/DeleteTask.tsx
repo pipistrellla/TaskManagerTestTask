@@ -48,8 +48,12 @@ export const DeleteTask: FC<DeleteTaskProps> = observer((props) => {
                     />
 
                     <HStack justify="between" max>
-                        <Button onClick={OnClickDeleteTask}>Удалить</Button>
-                        <Button onClick={CloseModalHandler}>Отменить</Button>
+                        <Button color="success" onClick={OnClickDeleteTask}>
+                            Удалить
+                        </Button>
+                        <Button color="error" onClick={CloseModalHandler}>
+                            Отменить
+                        </Button>
                     </HStack>
                 </VStack>
             </Modal>
