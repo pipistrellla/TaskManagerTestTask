@@ -3,8 +3,8 @@ import React, { FC, useCallback, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { TaskListStore } from 'src/entities/Task';
 import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
-import { Modal } from 'src/shared/Modal';
 import { Button } from 'src/shared/ui/Button/Button';
+import { Modal } from 'src/shared/ui/Modal';
 import { VStack, HStack } from 'src/shared/ui/Stack';
 import { Text } from 'src/shared/ui/Text';
 
