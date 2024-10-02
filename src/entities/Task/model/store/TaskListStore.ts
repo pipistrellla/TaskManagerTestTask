@@ -251,6 +251,10 @@ class TaskListStore {
 
         const parent = tempArray[indices[indices.length - 2] - 1];
         parent.selected = whereToCheck.every((task) => task.selected);
+
+        if (parent.id.split('.').length !== 1) {
+            this.UpdateSelectedStatus(parent.id);
+        }
     }
 }
 
