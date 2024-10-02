@@ -14,13 +14,10 @@ interface DeleteTaskProps {
 
 export const DeleteTask: FC<DeleteTaskProps> = observer((props) => {
     const { className } = props;
-    const [editedTask, setEditedTask] = useState({
-        ...TaskListStore.activeTask,
-    });
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>();
 
-    const DeleteTaskHandler = useCallback(() => {
+    const onClickOpenModal = useCallback(() => {
         setIsModalOpen(true);
     }, []);
 
@@ -28,11 +25,17 @@ export const DeleteTask: FC<DeleteTaskProps> = observer((props) => {
         setIsModalOpen(false);
     }, []);
 
+    const OnClickDeleteTask = useCallback(() => {
+        TaskListStore.DeleteActiveTask();
+        TaskListStore.SaveToLocalStorage();
+        CloseModalHandler();
+    }, [CloseModalHandler]);
+
     return (
         <div className={classNames('', {}, [className])}>
             <Button
                 disabled={!TaskListStore.activeTask}
-                onClick={DeleteTaskHandler}
+                onClick={onClickOpenModal}
             >
                 Удалить текущую задачу
             </Button>
@@ -45,14 +48,7 @@ export const DeleteTask: FC<DeleteTaskProps> = observer((props) => {
                     />
 
                     <HStack justify="between" max>
-                        <Button
-                            onClick={() => {
-                                TaskListStore.DeleteActiveTask();
-                                CloseModalHandler();
-                            }}
-                        >
-                            Удалить
-                        </Button>
+                        <Button onClick={OnClickDeleteTask}>Удалить</Button>
                         <Button onClick={CloseModalHandler}>Отменить</Button>
                     </HStack>
                 </VStack>

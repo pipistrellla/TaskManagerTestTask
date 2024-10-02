@@ -38,11 +38,13 @@ export const CreateTask: FC<CreateTaskProps> = observer((props) => {
 
     const onClickCreateNewBigTask = useCallback(() => {
         TaskListStore.AddNewBigTask();
+        TaskListStore.SaveToLocalStorage();
         setIsModalOpen(false);
     }, []);
 
     const onClickCreateNewTask = useCallback(() => {
         TaskListStore.AddNewTask();
+        TaskListStore.SaveToLocalStorage();
         setIsModalOpen(false);
     }, []);
 

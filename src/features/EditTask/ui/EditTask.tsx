@@ -39,6 +39,7 @@ export const EditTask: FC<EditTaskProps> = observer((props) => {
 
     const onClickSaveEditedTask = useCallback(() => {
         TaskListStore.SaveEditTask();
+        TaskListStore.SaveToLocalStorage();
         setIsModalOpen(false);
     }, []);
 

@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { TASK_LIST_LOCALSTORAGE } from 'src/shared/const/localStorage';
 
 export interface TaskProps {
     id: string;
@@ -9,60 +10,7 @@ export interface TaskProps {
 }
 
 class TaskListStore {
-    TaskListData: TaskProps[] = [
-        {
-            id: '1',
-            name: 'Node 1',
-            selected: false,
-            children: [
-                {
-                    id: '1.1',
-                    name: 'Node 1.1',
-                    selected: false,
-                    children: [
-                        {
-                            id: '1.1.1',
-                            name: 'Node 1.1.1',
-                            children: [],
-                            selected: true,
-                        },
-                        {
-                            id: '1.1.2',
-                            name: 'Node 1.1.2',
-                            children: [],
-                            selected: false,
-                        },
-                    ],
-                },
-                {
-                    id: '1.2',
-                    name: 'Node 1.2',
-                    children: [],
-                    selected: false,
-                },
-                {
-                    id: '1.3',
-                    name: 'Node 1.3',
-                    children: [],
-                    selected: false,
-                },
-            ],
-            description: 'выполнить все задачи',
-        },
-        {
-            id: '2',
-            name: 'Node 2',
-            selected: true,
-            children: [
-                {
-                    id: '2.1',
-                    name: 'Node 2.1',
-                    children: [],
-                    selected: true,
-                },
-            ],
-        },
-    ];
+    TaskListData: TaskProps[] = [];
 
     private activeTaskId: string = '';
 
@@ -72,6 +20,8 @@ class TaskListStore {
 
     constructor() {
         makeAutoObservable(this);
+
+        this.LoadFromLocalStorage();
     }
 
     SetActiveTask(task: TaskProps): void {
@@ -101,6 +51,8 @@ class TaskListStore {
 
         this.UpdateIds(this.TaskListData);
         this.activeTask = null;
+
+        this.SaveToLocalStorage();
     }
 
     private UpdateIds(tasks: TaskProps[], parentID = '') {
@@ -129,7 +81,6 @@ class TaskListStore {
             pushTo.push(this.tempTask);
         }
 
-        // todo попытаться вынести функции
         this.UpdateSelectedStatus(this.GenerateTaskId());
     }
 
@@ -191,25 +142,15 @@ class TaskListStore {
             this.tempTask = { ...this.activeTask };
         }
     }
-    // todo переделать генератор task id
 
     SaveEditTask(): void {
-        const indices: number[] = this.activeTaskId
-            .split('.')
-            .map((item) => +item);
-        let tempArray: TaskProps[] = this.TaskListData;
+        if (this.activeTask && this.tempTask) {
+            const whereToSave = this.FindTaskDimension(this.activeTaskId);
+            const index = +this.activeTaskId.slice(-1) - 1;
 
-        for (let i = 0; i < indices.length - 1; i += 1) {
-            const index = indices[i] - 1;
-            tempArray = tempArray[index].children;
-        }
+            this.activeTask = { ...this.activeTask, ...this.tempTask };
 
-        // tempArray[indices[indices.length - 1] - 1] = { ...this.tempTask };
-        if (tempArray) {
-            let parent: TaskProps = tempArray[indices[indices.length - 1] - 1];
-            console.log(this.tempTask);
-
-            parent = { ...parent, ...this.tempTask };
+            whereToSave[index] = { ...this.activeTask };
         }
     }
 
@@ -224,6 +165,8 @@ class TaskListStore {
         if (id.length > 1) {
             this.UpdateSelectedStatus(id);
         }
+
+        this.SaveToLocalStorage();
     }
 
     SetSelectedForAllChildren(id: string, value: boolean): void {
@@ -264,6 +207,21 @@ class TaskListStore {
 
         if (parent.id.split('.').length !== 1) {
             this.UpdateSelectedStatus(parent.id);
+        }
+    }
+
+    SaveToLocalStorage() {
+        localStorage.setItem(
+            TASK_LIST_LOCALSTORAGE,
+            JSON.stringify(this.TaskListData),
+        );
+    }
+
+    LoadFromLocalStorage() {
+        const data = localStorage.getItem(TASK_LIST_LOCALSTORAGE);
+
+        if (data) {
+            this.TaskListData = JSON.parse(data);
         }
     }
 }
