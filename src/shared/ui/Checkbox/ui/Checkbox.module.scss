@@ -1,3 +1,25 @@
 .checkbox {
+    cursor: pointer;
+    background: var(--light-bg-color);
+    border: 2px solid var(--accent-color);
+}
 
+.svg {
+    stroke: var(--accent-color);
+
+    &.unchecked {
+        stroke: none;
+    }
+}
+
+.m {
+    height: 24px;
+}
+
+.l {
+    height: 32px;
+}
+
+.s {
+    height: 16px;
 }

@@ -3,9 +3,9 @@ import React, { FC, useCallback, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { TaskListStore } from 'src/entities/Task';
 import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
-import { Modal } from 'src/shared/Modal';
 import { Button } from 'src/shared/ui/Button/Button';
 import { Input } from 'src/shared/ui/Input';
+import { Modal } from 'src/shared/ui/Modal';
 import { VStack, HStack } from 'src/shared/ui/Stack';
 import { Text } from 'src/shared/ui/Text';
 
@@ -19,8 +19,9 @@ export const CreateTask: FC<CreateTaskProps> = observer((props) => {
     const { className } = props;
     const [isModalOpen, setIsModalOpen] = useState<boolean>();
 
-    const addSubTaskHandler = useCallback(() => {
+    const addTaskHandler = useCallback(() => {
         setIsModalOpen(true);
+        TaskListStore.SetTempTask();
     }, []);
 
     const CloseModalHandler = useCallback(() => {
@@ -35,15 +36,22 @@ export const CreateTask: FC<CreateTaskProps> = observer((props) => {
         TaskListStore.SetTempTaskDescription(value);
     }, []);
 
+    const onClickCreateNewBigTask = useCallback(() => {
+        TaskListStore.AddNewBigTask();
+        TaskListStore.SaveToLocalStorage();
+        setIsModalOpen(false);
+    }, []);
+
+    const onClickCreateNewTask = useCallback(() => {
+        TaskListStore.AddNewTask();
+        TaskListStore.SaveToLocalStorage();
+        setIsModalOpen(false);
+    }, []);
+
     // вынести создание в отдельные функции
     return (
         <div className={classNames(cls.createTask, {}, [className])}>
-            <Button
-                disabled={!TaskListStore.activeTask}
-                onClick={addSubTaskHandler}
-            >
-                Создание задачи
-            </Button>
+            <Button onClick={addTaskHandler}>Создание задачи</Button>
 
             <Modal lazy onClose={CloseModalHandler} isOpen={isModalOpen}>
                 <VStack gap="24">
@@ -59,13 +67,18 @@ export const CreateTask: FC<CreateTaskProps> = observer((props) => {
                     />
 
                     <HStack justify="center" max gap="32">
-                        <Button onClick={TaskListStore.AddNewBigTask}>
+                        <Button onClick={onClickCreateNewBigTask}>
                             Создать новую задачу
                         </Button>
-                        <Button onClick={TaskListStore.AddNewTask}>
+                        <Button
+                            disabled={!TaskListStore.activeTask}
+                            onClick={onClickCreateNewTask}
+                        >
                             Создать подзадачу
                         </Button>
-                        <Button onClick={CloseModalHandler}>Отменить</Button>
+                        <Button color="error" onClick={CloseModalHandler}>
+                            Отменить
+                        </Button>
                     </HStack>
                 </VStack>
             </Modal>

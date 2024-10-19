@@ -48,7 +48,7 @@ export const Task: React.FC<TaskNodeProps> = observer((props) => {
                         )}
                         <Button
                             variant="clear"
-                            onClick={() => TaskListStore.setActiveTask(task)}
+                            onClick={() => TaskListStore.SetActiveTask(task)}
                         >
                             {task.id} {task.name}
                         </Button>

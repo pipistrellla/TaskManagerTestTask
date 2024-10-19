@@ -3,9 +3,9 @@ import React, { FC, useCallback, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import TaskListStore from 'src/entities/Task/model/store/TaskListStore';
 import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
-import { Modal } from 'src/shared/Modal';
 import { Button } from 'src/shared/ui/Button/Button';
 import { Input } from 'src/shared/ui/Input';
+import { Modal } from 'src/shared/ui/Modal';
 import { HStack, VStack } from 'src/shared/ui/Stack';
 import { Text } from 'src/shared/ui/Text';
 
@@ -37,6 +37,12 @@ export const EditTask: FC<EditTaskProps> = observer((props) => {
         TaskListStore.SetTempTaskDescription(value);
     }, []);
 
+    const onClickSaveEditedTask = useCallback(() => {
+        TaskListStore.SaveEditTask();
+        TaskListStore.SaveToLocalStorage();
+        setIsModalOpen(false);
+    }, []);
+
     return (
         <div className={classNames(cls.editTask, {}, [className])}>
             <Button
@@ -60,10 +66,12 @@ export const EditTask: FC<EditTaskProps> = observer((props) => {
                     />
 
                     <HStack justify="between" max>
-                        <Button onClick={TaskListStore.SaveEditTask}>
+                        <Button color="success" onClick={onClickSaveEditedTask}>
                             сохранить
                         </Button>
-                        <Button onClick={CloseModalHandler}>отменить</Button>
+                        <Button color="error" onClick={CloseModalHandler}>
+                            отменить
+                        </Button>
                     </HStack>
                 </VStack>
             </Modal>

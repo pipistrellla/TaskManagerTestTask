@@ -3,8 +3,8 @@ import React, { FC, useCallback, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { TaskListStore } from 'src/entities/Task';
 import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
-import { Modal } from 'src/shared/Modal';
 import { Button } from 'src/shared/ui/Button/Button';
+import { Modal } from 'src/shared/ui/Modal';
 import { VStack, HStack } from 'src/shared/ui/Stack';
 import { Text } from 'src/shared/ui/Text';
 
@@ -14,13 +14,10 @@ interface DeleteTaskProps {
 
 export const DeleteTask: FC<DeleteTaskProps> = observer((props) => {
     const { className } = props;
-    const [editedTask, setEditedTask] = useState({
-        ...TaskListStore.activeTask,
-    });
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>();
 
-    const DeleteTaskHandler = useCallback(() => {
+    const onClickOpenModal = useCallback(() => {
         setIsModalOpen(true);
     }, []);
 
@@ -28,11 +25,17 @@ export const DeleteTask: FC<DeleteTaskProps> = observer((props) => {
         setIsModalOpen(false);
     }, []);
 
+    const OnClickDeleteTask = useCallback(() => {
+        TaskListStore.DeleteActiveTask();
+        TaskListStore.SaveToLocalStorage();
+        CloseModalHandler();
+    }, [CloseModalHandler]);
+
     return (
         <div className={classNames('', {}, [className])}>
             <Button
                 disabled={!TaskListStore.activeTask}
-                onClick={DeleteTaskHandler}
+                onClick={onClickOpenModal}
             >
                 Удалить текущую задачу
             </Button>
@@ -45,15 +48,12 @@ export const DeleteTask: FC<DeleteTaskProps> = observer((props) => {
                     />
 
                     <HStack justify="between" max>
-                        <Button
-                            onClick={() => {
-                                TaskListStore.DeleteActiveTask();
-                                CloseModalHandler();
-                            }}
-                        >
+                        <Button color="success" onClick={OnClickDeleteTask}>
                             Удалить
                         </Button>
-                        <Button onClick={CloseModalHandler}>Отменить</Button>
+                        <Button color="error" onClick={CloseModalHandler}>
+                            Отменить
+                        </Button>
                     </HStack>
                 </VStack>
             </Modal>

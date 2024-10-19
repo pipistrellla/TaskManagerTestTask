@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { TASK_LIST_LOCALSTORAGE } from 'src/shared/const/localStorage';
 
 export interface TaskProps {
     id: string;
@@ -9,60 +10,7 @@ export interface TaskProps {
 }
 
 class TaskListStore {
-    TaskListData: TaskProps[] = [
-        {
-            id: '1',
-            name: 'Node 1',
-            selected: false,
-            children: [
-                {
-                    id: '1.1',
-                    name: 'Node 1.1',
-                    selected: false,
-                    children: [
-                        {
-                            id: '1.1.1',
-                            name: 'Node 1.1.1',
-                            children: [],
-                            selected: true,
-                        },
-                        {
-                            id: '1.1.2',
-                            name: 'Node 1.1.2',
-                            children: [],
-                            selected: false,
-                        },
-                    ],
-                },
-                {
-                    id: '1.2',
-                    name: 'Node 1.2',
-                    children: [],
-                    selected: false,
-                },
-                {
-                    id: '1.3',
-                    name: 'Node 1.3',
-                    children: [],
-                    selected: false,
-                },
-            ],
-            description: 'выполнить все задачи',
-        },
-        {
-            id: '2',
-            name: 'Node 2',
-            selected: false,
-            children: [
-                {
-                    id: '2.1',
-                    name: 'Node 2.1',
-                    children: [],
-                    selected: true,
-                },
-            ],
-        },
-    ];
+    TaskListData: TaskProps[] = [];
 
     private activeTaskId: string = '';
 
@@ -72,22 +20,18 @@ class TaskListStore {
 
     constructor() {
         makeAutoObservable(this);
+
+        this.LoadFromLocalStorage();
     }
 
-    setActiveTask(task: TaskProps) {
+    SetActiveTask(task: TaskProps): void {
         this.activeTask = task;
         this.activeTaskId = this.activeTask.id;
-        this.generateTaskId();
     }
 
-    private findCurrentTaskId(): number[] {
-        const taskId = this.activeTaskId.split('.').map((item) => +item);
-        return taskId;
-    }
-
-    private findActiveTaskDimension() {
+    private FindTaskDimension(id: string): TaskProps[] {
         let currentArray: TaskProps[] = this.TaskListData;
-        const indices: number[] = this.findCurrentTaskId();
+        const indices: number[] = id.split('.').map((item) => +item);
         for (let i = 0; i < indices.length - 1; i += 1) {
             const index = indices[i] - 1;
             currentArray = currentArray[index].children;
@@ -95,9 +39,9 @@ class TaskListStore {
         return currentArray;
     }
 
-    DeleteActiveTask() {
+    DeleteActiveTask(): void {
         const id = this.activeTaskId;
-        const deleteFrom = this.findActiveTaskDimension();
+        const deleteFrom = this.FindTaskDimension(this.activeTaskId);
 
         deleteFrom.forEach((item, index) => {
             if (item.id === id) {
@@ -105,11 +49,23 @@ class TaskListStore {
             }
         });
 
+        this.UpdateIds(this.TaskListData);
         this.activeTask = null;
+
+        this.SaveToLocalStorage();
     }
 
-    private generateTaskId() {
-        const tempArray = this.findActiveTaskDimension();
+    private UpdateIds(tasks: TaskProps[], parentID = '') {
+        tasks.forEach((task, index) => {
+            task.id = parentID ? `${parentID}.${index + 1}` : `${index + 1}`;
+            if (task.children.length > 0) {
+                this.UpdateIds(task.children, task.id);
+            }
+        });
+    }
+
+    private GenerateTaskId(): string {
+        const tempArray = this.FindTaskDimension(this.activeTaskId);
         const currentTaskId = +this.activeTaskId[this.activeTaskId.length - 1];
 
         const currentTaskChildren = tempArray[currentTaskId - 1].children;
@@ -117,27 +73,43 @@ class TaskListStore {
         return nextTaskId;
     }
 
-    AddNewTask() {
+    AddNewTask(): void {
         if (this.tempTask) {
-            this.setTempTask();
-            this.tempTask = { ...this.tempTask, id: this.generateTaskId() };
-            this.TaskListData.push(this.tempTask);
-            console.log(this.TaskListData);
+            const pushTo = this.findTaskChild(this.activeTaskId);
+
+            this.tempTask = { ...this.tempTask, id: this.GenerateTaskId() };
+            pushTo.push(this.tempTask);
         }
+
+        this.UpdateSelectedStatus(this.GenerateTaskId());
     }
 
-    AddNewBigTask() {
+    private findTaskChild(id: string): TaskProps[] {
+        let currentArray: TaskProps[] = this.TaskListData;
+        const indices: number[] = id.split('.').map((item) => +item);
+        for (let i = 0; i < indices.length; i += 1) {
+            const index = indices[i] - 1;
+            currentArray = currentArray[index].children;
+        }
+        return currentArray;
+    }
+
+    AddNewBigTask(): void {
         if (this.tempTask) {
-            this.setTempTask();
             this.tempTask = {
                 ...this.tempTask,
-                id: `${this.TaskListData.length}`,
+                id: this.GenerateBigTaskId(),
             };
+
             this.TaskListData.push(this.tempTask);
         }
     }
 
-    SetTempTaskDescription(taskDescription: string) {
+    private GenerateBigTaskId(): string {
+        return `${this.TaskListData.length + 1}`;
+    }
+
+    SetTempTaskDescription(taskDescription: string): void {
         if (this.tempTask) {
             this.tempTask = {
                 ...this.tempTask,
@@ -146,7 +118,7 @@ class TaskListStore {
         }
     }
 
-    SetTempTaskName(taskName: string) {
+    SetTempTaskName(taskName: string): void {
         if (this.tempTask) {
             this.tempTask = {
                 ...this.tempTask,
@@ -155,11 +127,7 @@ class TaskListStore {
         }
     }
 
-    private ClearTempTask() {
-        this.tempTask = null;
-    }
-
-    private setTempTask() {
+    SetTempTask(): void {
         this.tempTask = {
             name: '',
             children: [],
@@ -169,37 +137,92 @@ class TaskListStore {
         };
     }
 
-    SetEditTask() {
+    SetEditTask(): void {
         if (this.activeTask) {
             this.tempTask = { ...this.activeTask };
         }
     }
 
-    SaveEditTask() {
-        if (this.tempTask) {
-            this.activeTask = { ...this.tempTask };
+    SaveEditTask(): void {
+        if (this.activeTask && this.tempTask) {
+            const whereToSave = this.FindTaskDimension(this.activeTaskId);
+            const index = +this.activeTaskId.slice(-1) - 1;
+
+            this.activeTask = { ...this.activeTask, ...this.tempTask };
+
+            whereToSave[index] = { ...this.activeTask };
         }
     }
 
-    InvertSelected(id: string) {
-        const changeHere = this.findTaskDimension(id);
-        console.log(changeHere);
-
+    InvertSelected(id: string): void {
+        const changeHere = this.FindTaskDimension(id);
         changeHere.forEach((item, index) => {
             if (item.id === id) {
                 changeHere[index].selected = !changeHere[index].selected;
+                this.SetSelectedForAllChildren(id, changeHere[index].selected);
             }
+        });
+        if (id.length > 1) {
+            this.UpdateSelectedStatus(id);
+        }
+
+        this.SaveToLocalStorage();
+    }
+
+    SetSelectedForAllChildren(id: string, value: boolean): void {
+        this.TaskListData.forEach((task) => {
+            this.setSelectedRecursive(task, id, value);
         });
     }
 
-    private findTaskDimension(id: string) {
-        let currentArray: TaskProps[] = this.TaskListData;
-        const indices: number[] = id.split('.').map((item) => +item);
-        for (let i = 0; i < indices.length - 1; i += 1) {
-            const index = indices[i] - 1;
-            currentArray = currentArray[index].children;
+    private setSelectedRecursive(
+        task: TaskProps,
+        targetId: string,
+        value: boolean,
+    ): void {
+        if (task.id === targetId) {
+            task.selected = value;
+            task.children.forEach((child) => {
+                this.setSelectedRecursive(child, child.id, value);
+            });
+        } else {
+            task.children.forEach((child) => {
+                this.setSelectedRecursive(child, targetId, value);
+            });
         }
-        return currentArray;
+    }
+
+    UpdateSelectedStatus(id: string): void {
+        const whereToCheck = this.FindTaskDimension(id);
+        const indices: number[] = id.split('.').map((item) => +item);
+        let tempArray: TaskProps[] = this.TaskListData;
+
+        for (let i = 0; i < indices.length - 2; i += 1) {
+            const index = indices[i] - 1;
+            tempArray = tempArray[index].children;
+        }
+
+        const parent = tempArray[indices[indices.length - 2] - 1];
+        parent.selected = whereToCheck.every((task) => task.selected);
+
+        if (parent.id.split('.').length !== 1) {
+            this.UpdateSelectedStatus(parent.id);
+        }
+    }
+
+    SaveToLocalStorage() {
+        localStorage.setItem(
+            TASK_LIST_LOCALSTORAGE,
+            JSON.stringify(this.TaskListData),
+        );
+    }
+
+    LoadFromLocalStorage() {
+        const data = localStorage.getItem(TASK_LIST_LOCALSTORAGE);
+
+        if (data) {
+            this.TaskListData = JSON.parse(data);
+        }
     }
 }
 

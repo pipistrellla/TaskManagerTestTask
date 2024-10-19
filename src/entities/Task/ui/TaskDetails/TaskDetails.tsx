@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 
 import { observer } from 'mobx-react-lite';
-import { TaskProps } from 'src/entities/Task/model/store/TaskListStore';
 import { classNames } from 'src/shared/lib/helpers/ClassNames/ClassNames';
 import { VStack } from 'src/shared/ui/Stack';
 import { Text } from 'src/shared/ui/Text';
 
 import cls from './TaskDetails.module.scss';
+import { TaskProps } from '../../model/store/TaskListStore';
 
 interface TaskDetailsProps {
     className?: string;

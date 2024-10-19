@@ -53,6 +53,7 @@ export const Text: FC<TextProps> = memo((props: TextProps) => {
 
     return (
         <div
+            {...otherProps}
             className={classNames(
                 cls.Text,
                 { [cls.bold]: bold },

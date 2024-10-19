@@ -1,5 +1,6 @@
 @import "reset";
 @import "variables/global";
+@import "themes/dark";
 @import "themes/normal";
 
 body {
@@ -18,18 +19,17 @@ body {
     display: flex;
 }
 
-// скрол
 *::-webkit-scrollbar {
     width: 12px;
     height: 8px;
 }
 
 *::-webkit-scrollbar-track {
-    background: var(--light-bg-color);        /* цвет зоны отслеживания */
+    background: var(--light-bg-color);
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: var(--icon-color);    /* цвет бегунка */
-    border-radius: 20px;       /* округлось бегунка */
-    border: 1px solid var(--accent-color);  /* отступ вокруг бегунка */
+    background-color: var(--icon-color);
+    border-radius: 20px;
+    border: 1px solid var(--accent-color);
 }
